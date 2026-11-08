@@ -1,0 +1,8 @@
+<resources>
+    <!-- Tema de ventana: evita el destello blanco antes de que Compose dibuje. -->
+    <style name="Theme.Zenith" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/zenith_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>
