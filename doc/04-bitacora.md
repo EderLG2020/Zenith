@@ -36,13 +36,22 @@ export JAVA_HOME="C:/Users/Lenovo/Android/jdk21"
 
 ### ⏸️ Dónde quedamos
 
-1. **Revisión final de la fase 1:** se lanzó un revisor independiente sobre toda la rama, pero la sesión terminó antes de recibir el resultado. Hay que volver a ejecutarla o revisar sus hallazgos, y corregir los críticos o importantes con test primero.
+1. **Revisión final de la fase 1: recibida. Veredicto: "lista para unir con correcciones".** La navegación, la recreación de la pantalla y los títulos largos están bien. Falta corregir lo siguiente, con test primero:
+   - **Importante 1, barras del sistema en modo claro:** `MainActivity.kt:15` usa `enableEdgeToEdge()` sin argumentos. Con el teléfono en modo claro, la hora y la batería se dibujan oscuras sobre el fondo oscuro y no se ven.
+     - *Corrección:* `enableEdgeToEdge(SystemBarStyle.dark(Color.TRANSPARENT), SystemBarStyle.dark(Color.TRANSPARENT))`.
+     - *Test:* Robolectric con `notnight` que lance `MainActivity` y exija `isAppearanceLightStatusBars` y `isAppearanceLightNavigationBars` en `false`.
+   - **Importante 2, chip con letra grande:** con la letra del sistema a 2.0x, el texto del chip se corta a mitad de letra y sin "…" (`ZenithChip.kt:46`). El test actual no lo detecta porque Robolectric en modo LEGACY mide 1 px por carácter.
+     - *Corrección:* usar `@GraphicsMode(NATIVE)` en `ComponentsTest` y comprobar `!hasVisualOverflow`. En el chip, permitir 2 líneas o documentar que las filas de chips van en `LazyRow`/scroll, y añadir `overflow = TextOverflow.Ellipsis`.
+   - **Menores:**
+     - El test del título largo debe comprobar `isLineEllipsized(0)` con gráficos nativos.
+     - El ripple al pulsar sale negro e invisible: proveer `LocalContentColor = TextPrimary` en `ZenithTheme`.
+     - Faltan tres tests de navegación: atrás desde Inicio cierra la app, pulsar Inicio desde otra pestaña, y recrear la `MainActivity` real.
 2. **La rama `fase-01-base` todavía no está unida a `main`.** Después de la revisión hay que decidir si se une (merge).
 3. **Nunca se probó en un Android real**, solo con tests y una captura renderizada.
 
 ### ▶️ Qué continuar mañana (en orden)
 
-1. Terminar la revisión de la fase 1 y aplicar sus correcciones.
+1. Aplicar las correcciones de la revisión (ver "Dónde quedamos", punto 1): primero las 2 importantes, luego las menores.
 2. **Probar en el teléfono:** activar *Opciones de desarrollador → Depuración USB*, conectar por USB e instalar con `C:/Users/Lenovo/Android/sdk/platform-tools/adb.exe install -r app/build/outputs/apk/debug/app-debug.apk`. Revisar:
    - que no haya destello blanco al abrir;
    - que la barra flotante quede encima de la barra de gestos;
