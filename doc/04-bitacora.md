@@ -74,7 +74,7 @@ export JAVA_HOME="C:/Users/Lenovo/Android/jdk21"
 
 ## Sesión 2: 2026-11-09
 
-> Sin commits, a pedido del usuario: todos los cambios están en el área de trabajo de la rama `fase-01-base`.
+> Commits en la rama `fase-01-base`, sin coautor: `8562099` (correcciones de la fase 1), `df03287` (fase 2) y el de la fase 3.
 
 ### ✅ Lo que quedó hecho
 
@@ -94,13 +94,33 @@ export JAVA_HOME="C:/Users/Lenovo/Android/jdk21"
 - Konsist: la regla `RepositoryImpl` ahora mira solo el código de producción (antes también revisaba los tests).
 - **51/51 tests** y `assembleDebug` en verde.
 
+**Fase 3: Motor de reproducción** ([plan](planes/fase-03-reproduccion.md), tareas 1 a 5)
+- Media3 1.5.1. Permisos `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_MEDIA_PLAYBACK` y `WAKE_LOCK`. **No** se declaró `POST_NOTIFICATIONS`: las notificaciones multimedia están exentas en Android 13+ (hay que comprobarlo en el teléfono).
+- `domain`: `PlayerState`, `NowPlaying`, `RepeatMode` (Off → All → One) y la interfaz `MusicPlayer`.
+- `PlaybackService` (`MediaSessionService` + ExoPlayer):
+  - foco de audio: pausa en llamadas;
+  - pausa al desconectar los auriculares;
+  - `WAKE_MODE_LOCAL` para la pantalla apagada;
+  - se detiene al cerrar la app desde recientes si no está sonando.
+- `MediaItems.kt`: `Song` → `MediaItem`, con la URI también en `requestMetadata`, porque el `MediaController` no la envía. La sesión la recupera con `resolveMediaItems`.
+- `PlayerController`: conecta el `MediaController` al crearse. Las órdenes previas a la conexión esperan, publica `PlayerState` y salta los archivos dañados. Los tests usan `TestExoPlayerBuilder` + `FakeMediaSourceFactory`.
+- Mi Música: tocar una canción reproduce toda la lista, empezando por ella.
+- **67/67 tests** y `assembleDebug` en verde.
+
 ### ▶️ Qué continuar (en orden)
 
-1. Revisar los cambios y hacer los commits (fase 1: correcciones; fase 2: una por tarea).
-2. **Probar en el teléfono** (no había ninguno conectado por adb): todo lo de la sesión 1, más conceder y negar el permiso en Mi Música, ver las portadas y comprobar el rendimiento con la biblioteca real.
-3. Captura `doc/capturas/fase-02.png` (tarea 7 del plan).
-4. Unir a `main` y escribir el plan de la fase 3 (motor de reproducción con Media3).
+1. **Probar en el teléfono** (sigue sin haber ninguno conectado por adb). Repasar lo de las fases 1 y 2, y además:
+   - tocar una canción y que suene;
+   - bloquear la pantalla y que siga sonando;
+   - usar la notificación y la pantalla de bloqueo;
+   - controlarla con los auriculares Bluetooth;
+   - desconectarlos y que pause;
+   - recibir una llamada y que pause.
+2. Capturas de las fases 2 y 3.
+3. Unir a `main` y escribir el plan de la fase 4 (pantalla Reproduciendo).
 
 ### 📝 Notas
 - `IoDispatcher` vive en `di` y `data` lo importa. Si molesta, se puede mover a un paquete `common`.
 - El permiso se pide al entrar a Mi Música, no al abrir la app. Inicio lo reutilizará en la fase 7.
+- `PlayerState.positionMs` solo se actualiza con cada evento del reproductor. La barra de progreso de la fase 4 necesitará consultarla cada ~500 ms mientras suena.
+- El salto por archivo dañado (`onPlayerError`) no tiene test automático: se revisa en el teléfono.

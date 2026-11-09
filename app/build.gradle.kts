@@ -65,12 +65,19 @@ dependencies {
     // Portadas. Solo coil-compose: sin el módulo de red, Coil no puede descargar nada.
     implementation(libs.coil.compose)
 
+    // Reproducción en segundo plano con notificación y controles del sistema.
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.session)
+    implementation(libs.kotlinx.coroutines.guava)
+
     testImplementation(libs.konsist)
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.robolectric)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.media3.test.utils)
+    testImplementation(libs.media3.test.utils.robolectric)
     testImplementation(platform(libs.compose.bom))
     testImplementation(libs.compose.ui.test.junit4)
     debugImplementation(libs.compose.ui.test.manifest)

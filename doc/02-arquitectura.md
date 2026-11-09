@@ -82,7 +82,7 @@ com.zenith.player
 
 | Paquete | Puede usar | No puede usar |
 |---|---|---|
-| `ui` | `domain`, `playback.PlayerController` | `data`, Room o MediaStore directamente |
+| `ui` | `domain` (incluida la interfaz `MusicPlayer`, que implementa `playback.PlayerController`) | `data`, Room o MediaStore directamente |
 | `domain` | solo Kotlin y coroutines | `android.*`, `data`, `ui`, `playback` |
 | `data` | `domain` | `ui`, `playback` |
 | `playback` | `domain` | `ui` |
@@ -206,7 +206,7 @@ class ConventionTest {
 ## 6. Flujo de ejemplo: tocar una canción en Mi Música
 
 1. `LibraryScreen` llama `viewModel.onSongClick(song, list)`.
-2. `LibraryViewModel` llama `playerController.playQueue(list, startIndex)`.
+2. `LibraryViewModel` llama `musicPlayer.playQueue(list, startIndex)`. `MusicPlayer` es una interfaz del dominio, implementada por `PlayerController`.
 3. `PlayerController` envía la cola al `PlaybackService` mediante `MediaController`.
 4. ExoPlayer reproduce, y la sesión publica la notificación y los controles de la pantalla de bloqueo.
 5. `PlayerController` expone `playerState: StateFlow<PlayerState>`. `NowPlayingViewModel` y el mini reproductor lo observan y se redibujan.

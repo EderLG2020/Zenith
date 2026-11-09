@@ -15,6 +15,6 @@ fun LibraryRoute() {
     AudioPermissionGate(screenTitle = "Mi Música") {
         val viewModel: LibraryViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
-        LibraryScreen(state)
+        LibraryScreen(state, onSongClick = viewModel::onSongClick)
     }
 }
