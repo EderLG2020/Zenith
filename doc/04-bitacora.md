@@ -74,7 +74,7 @@ export JAVA_HOME="C:/Users/Lenovo/Android/jdk21"
 
 ## Sesión 2: 2026-11-09
 
-> Commits en la rama `fase-01-base`, sin coautor: `8562099` (correcciones de la fase 1), `df03287` (fase 2) el de la fase 3 y el de la fase 4.
+> Commits sin coautor: `8562099` (correcciones de la fase 1), `df03287` (fase 2), `b21fe1f` (fase 3) y `c1ed4e8` (fase 4). Todo está en `main` (una sola rama) y publicado en https://github.com/EderLG2020/Zenith.
 
 ### ✅ Lo que quedó hecho
 
@@ -131,7 +131,7 @@ export JAVA_HOME="C:/Users/Lenovo/Android/jdk21"
    - que Reproduciendo se vea como la referencia con portadas reales;
    - arrastrar la barra de progreso;
    - la hoja de la cola.
-2. Unir a `main`.
+2. ~~Unir a `main`~~: hecho, la rama `fase-01-base` se unió y se borró.
 3. Escribir el plan de la fase 5 (pantalla Mi Música completa).
 
 ### 📝 Notas
