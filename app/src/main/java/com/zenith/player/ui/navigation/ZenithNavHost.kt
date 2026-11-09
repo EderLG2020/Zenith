@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.zenith.player.ui.history.HistoryScreen
 import com.zenith.player.ui.home.HomeScreen
-import com.zenith.player.ui.library.LibraryScreen
+import com.zenith.player.ui.library.LibraryRoute
 import com.zenith.player.ui.playlists.PlaylistsScreen
 import com.zenith.player.ui.settings.SettingsScreen
 
@@ -16,7 +16,7 @@ import com.zenith.player.ui.settings.SettingsScreen
 fun ZenithNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = Destination.Home.route, modifier = modifier) {
         composable(Destination.Home.route) { HomeScreen() }
-        composable(Destination.Library.route) { LibraryScreen() }
+        composable(Destination.Library.route) { LibraryRoute() }
         composable(Destination.History.route) { HistoryScreen() }
         composable(Destination.Playlists.route) { PlaylistsScreen() }
         composable(Destination.Settings.route) { SettingsScreen() }

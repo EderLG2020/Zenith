@@ -7,8 +7,8 @@ Cada fase termina con una app que **compila, pasa los tests (incluidos los de Ko
 
 | # | Fase | Qué se puede ver o probar al terminar | Plan | Estado |
 |---|---|---|---|---|
-| 1 | **Base del proyecto** | La app abre con tema oscuro y lima, la barra flotante navega entre 5 pantallas vacías y Konsist vigila las capas | [fase-01-base.md](planes/fase-01-base.md) | 🟡 Implementada; faltan correcciones de la revisión y prueba en dispositivo (ver 04-bitacora.md) |
-| 2 | **Biblioteca** | Pide permiso de audio y lista todas las canciones del teléfono con su portada (lista simple) | por escribir | ⬜ |
+| 1 | **Base del proyecto** | La app abre con tema oscuro y lima, la barra flotante navega entre 5 pantallas vacías y Konsist vigila las capas | [fase-01-base.md](planes/fase-01-base.md) | 🟡 Correcciones de la revisión aplicadas; falta probar en el teléfono y unir a `main` |
+| 2 | **Biblioteca** | Pide permiso de audio y lista todas las canciones del teléfono con su portada (lista simple) | [fase-02-biblioteca.md](planes/fase-02-biblioteca.md) | 🟡 Implementada (51/51 tests); falta probarla en el teléfono |
 | 3 | **Motor de reproducción** | Tocar una canción la reproduce; sigue sonando con la pantalla bloqueada; notificación y auriculares funcionan; aleatorio y repetir | por escribir | ⬜ |
 | 4 | **Pantalla Reproduciendo** | Portada circular, fondo difuminado, barra de progreso lima, controles y hoja de cola, igual que la referencia | por escribir | ⬜ |
 | 5 | **Pantalla Mi Música** | Chips Todo, Listas, Me gusta, Álbumes, Artistas y Carpetas; detalles de álbum, artista y carpeta; menú de pulsación larga | por escribir | ⬜ |

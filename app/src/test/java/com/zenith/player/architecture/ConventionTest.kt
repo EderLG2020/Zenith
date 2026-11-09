@@ -37,8 +37,9 @@ class ConventionTest {
 
     @Test
     fun `los repositorios implementados terminan en RepositoryImpl`() {
-        Konsist.scopeFromPackage("com.zenith.player.data.repository..")
+        Konsist.scopeFromProduction()
             .classes()
+            .filter { it.resideInPackage("com.zenith.player.data.repository..") }
             .assertTrue { it.hasNameEndingWith("RepositoryImpl") }
     }
 }

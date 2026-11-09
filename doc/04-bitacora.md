@@ -71,3 +71,36 @@ export JAVA_HOME="C:/Users/Lenovo/Android/jdk21"
 
 - En la referencia, los iconos de la barra son de **contorno**; ahora son rellenos.
 - El círculo lima de la pestaña activa es un poco más pequeño en la referencia.
+
+## Sesión 2: 2026-11-09
+
+> Sin commits, a pedido del usuario: todos los cambios están en el área de trabajo de la rama `fase-01-base`.
+
+### ✅ Lo que quedó hecho
+
+**Correcciones de la revisión de la fase 1** (todas con test primero)
+- Barras del sistema: `enableEdgeToEdge(SystemBarStyle.dark(...))`, así los iconos se ven claros aunque el teléfono esté en modo claro (`MainActivityTest`).
+- Chip: `TextOverflow.Ellipsis`. Los tests usan `@GraphicsMode(NATIVE)`. A 2x, "Agregadas recientemente" es **más ancho que la pantalla**, así que las filas de chips deben ir en `LazyRow`/`horizontalScroll` (está documentado en `ZenithChip`).
+  - Con ancho infinito, `hasVisualOverflow` da un falso positivo. Por eso los tests comprueban `isLineEllipsized` y `getLineRight`.
+- Título largo: el test comprueba `isLineEllipsized(0)`.
+- Ripple: `ZenithTheme` provee `LocalContentColor = TextPrimary`.
+- Tests nuevos: atrás desde Inicio cierra la app, pulsar Inicio desde otra pestaña y recrear la `MainActivity` real.
+
+**Fase 2: Biblioteca** ([plan](planes/fase-02-biblioteca.md), tareas 1 a 6)
+- Permisos `READ_MEDIA_AUDIO` y `READ_EXTERNAL_STORAGE` (`maxSdkVersion 32`); `ManifestTest` vigila que no haya `INTERNET`.
+- `domain`: `Song` y `SongRepository`. `data`: `SongSource`, `MediaStoreSongSource` (MediaStore + `ContentObserver`) y `SongRepositoryImpl` (IO, `conflate`). `di`: `DataModule` y `DispatchersModule`.
+- Mi Música: `LibraryRoute` (permiso + `hiltViewModel`), `LibraryViewModel` y `LibraryScreen` (lista, vacío y carga), y `SongCover` con Coil 3 sin módulo de red.
+- `AudioPermissionGate`: explica y pide el permiso, ofrece "Abrir Ajustes" si ya no se puede pedir y vuelve a comprobarlo en cada `ON_RESUME`.
+- Konsist: la regla `RepositoryImpl` ahora mira solo el código de producción (antes también revisaba los tests).
+- **51/51 tests** y `assembleDebug` en verde.
+
+### ▶️ Qué continuar (en orden)
+
+1. Revisar los cambios y hacer los commits (fase 1: correcciones; fase 2: una por tarea).
+2. **Probar en el teléfono** (no había ninguno conectado por adb): todo lo de la sesión 1, más conceder y negar el permiso en Mi Música, ver las portadas y comprobar el rendimiento con la biblioteca real.
+3. Captura `doc/capturas/fase-02.png` (tarea 7 del plan).
+4. Unir a `main` y escribir el plan de la fase 3 (motor de reproducción con Media3).
+
+### 📝 Notas
+- `IoDispatcher` vive en `di` y `data` lo importa. Si molesta, se puede mover a un paquete `common`.
+- El permiso se pide al entrar a Mi Música, no al abrir la app. Inicio lo reutilizará en la fase 7.
