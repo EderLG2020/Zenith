@@ -1,14 +1,12 @@
 package com.zenith.player.ui.library
 
-import com.zenith.player.domain.model.PlayerState
 import com.zenith.player.domain.model.Song
-import com.zenith.player.domain.player.MusicPlayer
 import com.zenith.player.domain.repository.SongRepository
+import com.zenith.player.testing.FakeMusicPlayer
 import com.zenith.player.testing.testSong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -26,21 +24,6 @@ class LibraryViewModelTest {
     private class FakeSongRepository : SongRepository {
         val songs = MutableSharedFlow<List<Song>>()
         override fun observeSongs() = songs
-    }
-
-    /** Solo registra la última cola pedida. */
-    private class FakeMusicPlayer : MusicPlayer {
-        var lastQueue: Pair<List<Song>, Int>? = null
-        override val state = MutableStateFlow(PlayerState())
-        override fun playQueue(songs: List<Song>, startIndex: Int) {
-            lastQueue = songs to startIndex
-        }
-        override fun togglePlayPause() = Unit
-        override fun skipNext() = Unit
-        override fun skipPrevious() = Unit
-        override fun seekTo(positionMs: Long) = Unit
-        override fun setShuffle(enabled: Boolean) = Unit
-        override fun cycleRepeatMode() = Unit
     }
 
     private val repository = FakeSongRepository()

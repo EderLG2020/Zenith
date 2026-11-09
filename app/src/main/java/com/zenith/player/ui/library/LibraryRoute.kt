@@ -11,10 +11,10 @@ import com.zenith.player.ui.permission.AudioPermissionGate
  * así nunca consulta MediaStore sin permiso (lo que lanzaría SecurityException).
  */
 @Composable
-fun LibraryRoute() {
+fun LibraryRoute(onOpenNowPlaying: () -> Unit = {}) {
     AudioPermissionGate(screenTitle = "Mi Música") {
         val viewModel: LibraryViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
-        LibraryScreen(state, onSongClick = viewModel::onSongClick)
+        LibraryScreen(state, onSongClick = { id -> if (viewModel.onSongClick(id)) onOpenNowPlaying() })
     }
 }

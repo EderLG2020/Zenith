@@ -6,6 +6,7 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import com.zenith.player.domain.model.NowPlaying
 import com.zenith.player.domain.model.PlayerState
 import com.zenith.player.domain.model.RepeatMode
 import com.zenith.player.domain.model.Song
@@ -16,8 +17,11 @@ import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,10 +53,17 @@ class PlayerController internal constructor(
     private val _state = MutableStateFlow(PlayerState())
     override val state: StateFlow<PlayerState> = _state.asStateFlow()
 
+    private val _queue = MutableStateFlow<List<NowPlaying>>(emptyList())
+    override val queue: StateFlow<List<NowPlaying>> = _queue.asStateFlow()
+
+    /** Publica la posición cada [PROGRESS_INTERVAL_MS] mientras suena; null si está en pausa. */
+    private var progressJob: Job? = null
+
     private val player: Deferred<Player> = scope.async(start = CoroutineStart.LAZY) {
         connect().also { player ->
             player.addListener(Listener(player))
             publish(player)
+            publishQueue(player)
         }
     }
 
@@ -87,6 +98,15 @@ class PlayerController internal constructor(
 
     override fun cycleRepeatMode() = command { repeatMode = repeatMode.toDomain().next().toMedia3() }
 
+    override fun skipToQueueItem(index: Int) = command {
+        seekToDefaultPosition(index)
+        play()
+    }
+
+    override fun moveQueueItem(from: Int, to: Int) = command { moveMediaItem(from, to) }
+
+    override fun removeQueueItem(index: Int) = command { removeMediaItem(index) }
+
     private fun command(block: Player.() -> Unit) {
         scope.launch {
             val player = player.await()
@@ -106,10 +126,32 @@ class PlayerController internal constructor(
             queueSize = player.mediaItemCount,
             currentIndex = player.currentMediaItemIndex,
         )
+        updateProgressTicker(player)
+    }
+
+    private fun publishQueue(player: Player) {
+        _queue.value = (0 until player.mediaItemCount).mapNotNull { player.getMediaItemAt(it).toNowPlaying() }
+    }
+
+    private fun updateProgressTicker(player: Player) {
+        if (player.isPlaying && progressJob == null) {
+            progressJob = scope.launch {
+                while (isActive) {
+                    delay(PROGRESS_INTERVAL_MS)
+                    _state.value = _state.value.copy(positionMs = player.currentPosition)
+                }
+            }
+        } else if (!player.isPlaying) {
+            progressJob?.cancel()
+            progressJob = null
+        }
     }
 
     private inner class Listener(private val player: Player) : Player.Listener {
-        override fun onEvents(player: Player, events: Player.Events) = publish(player)
+        override fun onEvents(player: Player, events: Player.Events) {
+            publish(player)
+            if (events.contains(Player.EVENT_TIMELINE_CHANGED)) publishQueue(player)
+        }
 
         /** Archivo dañado o borrado: se salta a la siguiente en lugar de quedarse detenido. */
         override fun onPlayerError(error: PlaybackException) {
@@ -121,6 +163,8 @@ class PlayerController internal constructor(
         }
     }
 }
+
+private const val PROGRESS_INTERVAL_MS = 500L
 
 private fun Int.toDomain(): RepeatMode = when (this) {
     Player.REPEAT_MODE_ALL -> RepeatMode.All

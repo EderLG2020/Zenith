@@ -12,6 +12,8 @@ import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.zenith.player.ui.ZenithRoot
 import com.zenith.player.ui.theme.ZenithTheme
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -81,5 +83,11 @@ class NavigationTest {
         composeRule.onNodeWithContentDescription("Inicio").assertIsSelected()
         composeRule.onNodeWithContentDescription("Listas").assertIsNotSelected()
         composeRule.onNodeWithText("Inicio").assertIsDisplayed()
+    }
+
+    @Test
+    fun `la barra flotante se oculta en Reproduciendo y se ve en las pestañas`() {
+        assertFalse(showsFloatingBar(NOW_PLAYING_ROUTE))
+        Destination.entries.forEach { assertTrue(it.label, showsFloatingBar(it.route)) }
     }
 }

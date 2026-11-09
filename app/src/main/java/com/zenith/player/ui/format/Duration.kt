@@ -12,3 +12,7 @@ fun formatDuration(ms: Long): String {
         "%d:%02d".format(minutes, seconds)
     }
 }
+
+/** Tiempo que falta, con signo menos como en la referencia: `-2:15`. */
+fun formatRemaining(positionMs: Long, durationMs: Long): String =
+    "-" + formatDuration((durationMs - positionMs).coerceAtLeast(0))

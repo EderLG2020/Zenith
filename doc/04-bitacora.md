@@ -74,7 +74,7 @@ export JAVA_HOME="C:/Users/Lenovo/Android/jdk21"
 
 ## Sesión 2: 2026-11-09
 
-> Commits en la rama `fase-01-base`, sin coautor: `8562099` (correcciones de la fase 1), `df03287` (fase 2) y el de la fase 3.
+> Commits en la rama `fase-01-base`, sin coautor: `8562099` (correcciones de la fase 1), `df03287` (fase 2) el de la fase 3 y el de la fase 4.
 
 ### ✅ Lo que quedó hecho
 
@@ -107,20 +107,37 @@ export JAVA_HOME="C:/Users/Lenovo/Android/jdk21"
 - Mi Música: tocar una canción reproduce toda la lista, empezando por ella.
 - **67/67 tests** y `assembleDebug` en verde.
 
+**Fase 4: Pantalla Reproduciendo** ([plan](planes/fase-04-reproduciendo.md), 8 tareas)
+- `PlayerController`:
+  - publica la posición cada 500 ms mientras suena;
+  - publica la cola aparte, en `MusicPlayer.queue`, y la actualiza solo con `TIMELINE_CHANGED`;
+  - órdenes nuevas para saltar, mover y quitar elementos de la cola.
+- `NowPlayingViewModel` + `NowPlayingUiState`, y `formatRemaining` (`-2:15`).
+- Pantalla:
+  - fondo difuminado (`blur` en Android 12+; más oscuro en versiones anteriores);
+  - portada circular (72 % del ancho, máximo 320 dp);
+  - barra superior translúcida y textos.
+- `SeekBar`: se toca o se arrastra, y solo busca al soltar. Semántica `setProgress` para TalkBack.
+- `PlaybackControls`: la pulsación larga en aleatorio cambia el modo de repetir. Se indica con un punto (toda la cola) o un "1" (una canción).
+- `QueueSheet`: saltar, subir, bajar y quitar.
+- Navegación: la ruta `now_playing` oculta la barra flotante, y tocar una canción en Mi Música abre Reproduciendo.
+- **88/88 tests** y APK en verde. Captura en `doc/capturas/fase-04.png`.
+- `captureToImage` se cuelga en Robolectric. La captura se hizo con un test temporal que dibuja `window.decorView` en un `Canvas` (con `@GraphicsMode(NATIVE)`).
+
 ### ▶️ Qué continuar (en orden)
 
-1. **Probar en el teléfono** (sigue sin haber ninguno conectado por adb). Repasar lo de las fases 1 y 2, y además:
-   - tocar una canción y que suene;
-   - bloquear la pantalla y que siga sonando;
-   - usar la notificación y la pantalla de bloqueo;
-   - controlarla con los auriculares Bluetooth;
-   - desconectarlos y que pause;
-   - recibir una llamada y que pause.
-2. Capturas de las fases 2 y 3.
-3. Unir a `main` y escribir el plan de la fase 4 (pantalla Reproduciendo).
+1. **Probar en el teléfono las fases 1 a 4** (sigue sin haber ninguno conectado por adb):
+   - todo lo anterior;
+   - que Reproduciendo se vea como la referencia con portadas reales;
+   - arrastrar la barra de progreso;
+   - la hoja de la cola.
+2. Unir a `main`.
+3. Escribir el plan de la fase 5 (pantalla Mi Música completa).
 
 ### 📝 Notas
 - `IoDispatcher` vive en `di` y `data` lo importa. Si molesta, se puede mover a un paquete `common`.
 - El permiso se pide al entrar a Mi Música, no al abrir la app. Inicio lo reutilizará en la fase 7.
-- `PlayerState.positionMs` solo se actualiza con cada evento del reproductor. La barra de progreso de la fase 4 necesitará consultarla cada ~500 ms mientras suena.
 - El salto por archivo dañado (`onPlayerError`) no tiene test automático: se revisa en el teléfono.
+- El corazón de Reproduciendo todavía no hace nada (los favoritos llegan en la fase 6).
+- La cola se muestra en su orden original, aunque esté activado el aleatorio.
+- Reordenar la cola arrastrando queda para la fase 10, si hace falta.

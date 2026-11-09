@@ -21,3 +21,16 @@ class DurationTest {
         assertEquals("0:00", formatDuration(-5))
     }
 }
+
+class RemainingTest {
+    @Test
+    fun `el tiempo restante va con signo menos`() {
+        assertEquals("-2:15", formatRemaining(positionMs = 28_000, durationMs = 163_000))
+    }
+
+    @Test
+    fun `sin duración conocida o pasada de largo muestra cero`() {
+        assertEquals("-0:00", formatRemaining(positionMs = 5_000, durationMs = 0))
+        assertEquals("-0:00", formatRemaining(positionMs = 9_000, durationMs = 8_000))
+    }
+}

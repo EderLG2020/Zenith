@@ -30,10 +30,12 @@ class LibraryViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), LibraryUiState.Loading)
 
-    /** La cola es toda la lista, empezando por la canción tocada (diseño §5.3). */
-    fun onSongClick(songId: Long) {
+    /** La cola es toda la lista, empezando por la canción tocada (diseño §5.3). Devuelve si empezó a sonar. */
+    fun onSongClick(songId: Long): Boolean {
         val index = songs.indexOfFirst { it.id == songId }
-        if (index >= 0) musicPlayer.playQueue(songs, index)
+        if (index < 0) return false
+        musicPlayer.playQueue(songs, index)
+        return true
     }
 }
 

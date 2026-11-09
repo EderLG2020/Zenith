@@ -2,6 +2,8 @@ package com.zenith.player.playback
 
 import android.os.Looper
 import androidx.media3.common.Player
+import androidx.media3.common.SimpleBasePlayer
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.test.utils.FakeMediaSourceFactory
 import androidx.media3.test.utils.TestExoPlayerBuilder
@@ -14,6 +16,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -122,5 +125,60 @@ class PlayerControllerTest {
         idle()
         assertEquals(3, exoPlayer.mediaItemCount)
         assertEquals("Tres", controller.state.value.nowPlaying?.title)
+    }
+
+    @Test
+    fun `la cola refleja lo que se reproduce, se mueve y se quita`() {
+        val controller = controller()
+        controller.playQueue(songs, startIndex = 0)
+        idle()
+        assertEquals(listOf("Uno", "Dos", "Tres"), controller.queue.value.map { it.title })
+
+        controller.moveQueueItem(from = 2, to = 0)
+        idle()
+        assertEquals(listOf("Tres", "Uno", "Dos"), controller.queue.value.map { it.title })
+
+        controller.removeQueueItem(index = 2)
+        idle()
+        assertEquals(listOf("Tres", "Uno"), controller.queue.value.map { it.title })
+    }
+
+    @Test
+    fun `saltar a un elemento de la cola cambia de canción`() {
+        val controller = controller()
+        controller.playQueue(songs, startIndex = 0)
+        controller.skipToQueueItem(2)
+        idle()
+        assertEquals("Tres", controller.state.value.nowPlaying?.title)
+        assertEquals(2, controller.state.value.currentIndex)
+    }
+
+    @Test
+    fun `mientras suena, la posición se publica sola cada medio segundo`() {
+        val dispatcher = StandardTestDispatcher()
+        val tickingScope = CoroutineScope(dispatcher)
+        val fake = PlayingAtPositionPlayer()
+        val controller = PlayerController({ fake }, tickingScope)
+        dispatcher.scheduler.runCurrent()
+        assertEquals(0L, controller.state.value.positionMs)
+
+        fake.positionMs = 1_500
+        dispatcher.scheduler.advanceTimeBy(600)
+        dispatcher.scheduler.runCurrent()
+        assertEquals(1_500L, controller.state.value.positionMs)
+        tickingScope.cancel()
+    }
+
+    /** Reproductor mínimo que siempre "está sonando" en la posición que se le indique. */
+    @OptIn(UnstableApi::class)
+    private class PlayingAtPositionPlayer : SimpleBasePlayer(Looper.getMainLooper()) {
+        var positionMs = 0L
+        override fun getState(): State = State.Builder()
+            .setAvailableCommands(Player.Commands.Builder().addAllCommands().build())
+            .setPlaylist(listOf(MediaItemData.Builder("1").build()))
+            .setPlayWhenReady(true, Player.PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST)
+            .setPlaybackState(Player.STATE_READY)
+            .setContentPositionMs { positionMs }
+            .build()
     }
 }

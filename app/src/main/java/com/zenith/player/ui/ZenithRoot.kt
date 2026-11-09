@@ -16,6 +16,7 @@ import com.zenith.player.ui.navigation.Destination
 import com.zenith.player.ui.navigation.FloatingBottomBar
 import com.zenith.player.ui.navigation.ZenithNavHost
 import com.zenith.player.ui.navigation.navigateToTab
+import com.zenith.player.ui.navigation.showsFloatingBar
 import com.zenith.player.ui.theme.ZenithColors
 
 /** Raíz de la interfaz: pantallas + barra flotante encima de la barra de gestos. */
@@ -32,13 +33,15 @@ fun ZenithRoot() {
             .background(ZenithColors.Background),
     ) {
         ZenithNavHost(navController, Modifier.fillMaxSize())
-        FloatingBottomBar(
-            current = current,
-            onSelect = navController::navigateToTab,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
-                .padding(bottom = 12.dp),
-        )
+        if (showsFloatingBar(backStackEntry?.destination?.route)) {
+            FloatingBottomBar(
+                current = current,
+                onSelect = navController::navigateToTab,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .padding(bottom = 12.dp),
+            )
+        }
     }
 }

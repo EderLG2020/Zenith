@@ -10,7 +10,7 @@ Cada fase termina con una app que **compila, pasa los tests (incluidos los de Ko
 | 1 | **Base del proyecto** | La app abre con tema oscuro y lima, la barra flotante navega entre 5 pantallas vacías y Konsist vigila las capas | [fase-01-base.md](planes/fase-01-base.md) | 🟡 Correcciones de la revisión aplicadas; falta probar en el teléfono y unir a `main` |
 | 2 | **Biblioteca** | Pide permiso de audio y lista todas las canciones del teléfono con su portada (lista simple) | [fase-02-biblioteca.md](planes/fase-02-biblioteca.md) | 🟡 Implementada (51/51 tests); falta probarla en el teléfono |
 | 3 | **Motor de reproducción** | Tocar una canción la reproduce; sigue sonando con la pantalla bloqueada; notificación y auriculares funcionan; aleatorio y repetir | [fase-03-reproduccion.md](planes/fase-03-reproduccion.md) | 🟡 Implementada (67/67 tests); falta probarla en el teléfono |
-| 4 | **Pantalla Reproduciendo** | Portada circular, fondo difuminado, barra de progreso lima, controles y hoja de cola, igual que la referencia | por escribir | ⬜ |
+| 4 | **Pantalla Reproduciendo** | Portada circular, fondo difuminado, barra de progreso lima, controles y hoja de cola, igual que la referencia | [fase-04-reproduciendo.md](planes/fase-04-reproduciendo.md) | 🟡 Implementada (88/88 tests, captura en `capturas/fase-04.png`); falta probarla en el teléfono |
 | 5 | **Pantalla Mi Música** | Chips Todo, Listas, Me gusta, Álbumes, Artistas y Carpetas; detalles de álbum, artista y carpeta; menú de pulsación larga | por escribir | ⬜ |
 | 6 | **Datos del usuario** | Favoritos, listas propias, historial y conteo de reproducciones guardados en Room; se restaura la última cola | por escribir | ⬜ |
 | 7 | **Pantalla Inicio** | Saludo, chips (Agregadas recientemente, Más escuchadas, Recientes), carrusel "Para ti" con "Redescubre", "Tus listas" y búsqueda | por escribir | ⬜ |
@@ -51,14 +51,14 @@ Leyenda: ✅ hecha · 🟡 hecha en código, falta probarla en el teléfono · �
 6. 🟡 Verificación final (tests en verde; falta el teléfono)
 
 ### Fase 4: Pantalla Reproduciendo (8 tareas)
-1. ⬜ Progreso en vivo: `PlayerState` actualiza la posición cada ~500 ms mientras suena
-2. ⬜ `NowPlayingViewModel` y su `UiState` (canción, tiempos, play/pausa, aleatorio, repetir)
-3. ⬜ Portada circular grande con la misma portada difuminada de fondo y un degradado hacia negro
-4. ⬜ Barra superior (atrás, "Reproduciendo", corazón), título, artista y álbum
-5. ⬜ Barra de progreso lima arrastrable con tiempo transcurrido y restante
-6. ⬜ Controles: aleatorio, anterior, play/pausa lima, siguiente y cola; repetir con pulsación larga en aleatorio y su indicador
-7. ⬜ Hoja inferior de la cola: ver, saltar a una canción, reordenar y quitar
-8. ⬜ Navegación: tocar una canción abre Reproduciendo; verificación y captura junto a la referencia
+1. ✅ Progreso en vivo: `PlayerState` actualiza la posición cada ~500 ms mientras suena
+2. ✅ `NowPlayingViewModel` y su `UiState` (canción, tiempos, play/pausa, aleatorio, repetir)
+3. ✅ Portada circular grande con la misma portada difuminada de fondo y un degradado hacia negro
+4. ✅ Barra superior (atrás, "Reproduciendo", corazón), título, artista y álbum
+5. ✅ Barra de progreso lima arrastrable con tiempo transcurrido y restante
+6. ✅ Controles: aleatorio, anterior, play/pausa lima, siguiente y cola; repetir con pulsación larga en aleatorio y su indicador
+7. ✅ Hoja inferior de la cola: ver, saltar, reordenar (subir y bajar) y quitar
+8. 🟡 Navegación: tocar una canción abre Reproduciendo; verificación y captura junto a la referencia
 
 ### Fase 5: Pantalla Mi Música (7 tareas)
 1. ⬜ Álbumes, artistas y carpetas en el repositorio (agrupados a partir de MediaStore)
