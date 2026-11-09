@@ -74,7 +74,7 @@ export JAVA_HOME="C:/Users/Lenovo/Android/jdk21"
 
 ## Sesión 2: 2026-11-09
 
-> Commits sin coautor: `8562099` (correcciones de la fase 1), `df03287` (fase 2), `b21fe1f` (fase 3) y `c1ed4e8` (fase 4). Todo está en `main` (una sola rama) y publicado en https://github.com/EderLG2020/Zenith.
+> Commits sin coautor (uno por fase: `fix(fase 1)`, `feat(fase 2)`, `feat(fase 3)` y `feat(fase 4)`). Todo está en `main` (una sola rama) y publicado en https://github.com/EderLG2020/Zenith.
 
 ### ✅ Lo que quedó hecho
 
