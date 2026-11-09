@@ -14,13 +14,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zenith.player.ui.theme.ZenithColors
 import com.zenith.player.ui.theme.ZenithShapes
 import com.zenith.player.ui.theme.ZenithTheme
 
-/** Chip tipo píldora: lima cuando está seleccionado, gris oscuro si no. Crece con el tamaño de letra. */
+/**
+ * Chip tipo píldora: lima cuando está seleccionado, gris oscuro si no. Crece con el tamaño de letra.
+ *
+ * Las filas de chips deben ir en un `LazyRow` o con `horizontalScroll`: con letra grande un chip puede
+ * ser más ancho que la pantalla. Si aun así le falta espacio, el texto termina en "…".
+ */
 @Composable
 fun ZenithChip(
     text: String,
@@ -42,6 +48,7 @@ fun ZenithChip(
             style = MaterialTheme.typography.bodyMedium,
             color = if (selected) ZenithColors.OnAccent else ZenithColors.TextSecondary,
             maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

@@ -72,4 +72,14 @@ class NavigationTest {
         composeRule.onNodeWithContentDescription("Historial").assertIsSelected()
         composeRule.onNodeWithText("Historial").assertIsDisplayed()
     }
+
+    @Test
+    fun `pulsar Inicio desde otra pestaña vuelve a Inicio`() {
+        launch()
+        composeRule.onNodeWithContentDescription("Listas").performClick()
+        composeRule.onNodeWithContentDescription("Inicio").performClick()
+        composeRule.onNodeWithContentDescription("Inicio").assertIsSelected()
+        composeRule.onNodeWithContentDescription("Listas").assertIsNotSelected()
+        composeRule.onNodeWithText("Inicio").assertIsDisplayed()
+    }
 }

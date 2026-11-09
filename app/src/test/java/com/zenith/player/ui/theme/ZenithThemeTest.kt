@@ -1,5 +1,6 @@
 package com.zenith.player.ui.theme
 
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -40,5 +41,13 @@ class ZenithThemeTest {
         composeRule.waitForIdle()
         assertEquals(ZenithColors.Background, background)
         assertEquals(ZenithColors.Accent, primary)
+    }
+
+    @Test
+    fun `el color de contenido por defecto es blanco para que el ripple se vea`() {
+        var content = Color.Unspecified
+        composeRule.setContent { ZenithTheme { content = LocalContentColor.current } }
+        composeRule.waitForIdle()
+        assertEquals(ZenithColors.TextPrimary, content)
     }
 }
